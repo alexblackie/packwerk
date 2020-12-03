@@ -6,6 +6,7 @@ require "sorbet-runtime"
 require "packwerk/application_load_paths"
 require "packwerk/application_validator"
 require "packwerk/configuration"
+require "packwerk/dependencies_visualizer"
 require "packwerk/files_for_processing"
 require "packwerk/formatters/progress_formatter"
 require "packwerk/inflector"
@@ -57,6 +58,8 @@ module Packwerk
         update_deprecations(args)
       when "validate"
         validate(args)
+      when "visualize-dependencies"
+        visualize_dependencies(args)
       when nil, "help"
         @err_out.puts(<<~USAGE)
           Usage: #{$PROGRAM_NAME} <subcommand>
@@ -224,6 +227,10 @@ module Packwerk
 
         return result.ok?
       end
+    end
+
+    def visualize_dependencies(args)
+      DependenciesVisualizer.new.visualize(args)
     end
 
     def show_offenses(offenses)
